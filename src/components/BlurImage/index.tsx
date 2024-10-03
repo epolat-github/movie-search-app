@@ -1,13 +1,14 @@
-import { BlurView } from "expo-blur";
+import { BlurTint, BlurView } from "expo-blur";
 import { Image, ImageProps } from "expo-image";
 import { StyleSheet, View } from "react-native";
 
 interface BlurImageType {
     source: ImageProps["source"];
+    tint?: BlurTint;
 }
 
 const BlurImage: React.FC<BlurImageType> = (props) => {
-    const { source } = props;
+    const { source, tint = "dark" } = props;
 
     return (
         <View
@@ -22,6 +23,7 @@ const BlurImage: React.FC<BlurImageType> = (props) => {
                     zIndex: 2,
                     ...StyleSheet.absoluteFillObject,
                 }}
+                tint={tint}
             />
 
             <Image
