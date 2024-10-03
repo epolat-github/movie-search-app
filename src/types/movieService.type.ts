@@ -5,7 +5,7 @@ export interface MovieListRequestBody {
     r: "json" | "xml"; // response type
     page?: number;
     type?: MovieType;
-    y?: number; // year
+    y?: string; // year
 }
 
 export interface MovieListSingleItem {
@@ -16,11 +16,24 @@ export interface MovieListSingleItem {
     imdbID: string;
 }
 
-export interface MovieListResponseBody {
+export interface MovieListResponseBase {
     Response: "True" | "False";
+}
+
+export interface MovieListResponseSuccessBody extends MovieListResponseBase {
+    Response: "True";
     totalResults: string; // it's a stringified number
     Search: MovieListSingleItem[];
 }
+
+export interface MovieListResponseErrorBody extends MovieListResponseBase {
+    Response: "False";
+    Error: string;
+}
+
+export type MovieListResponseBody =
+    | MovieListResponseSuccessBody
+    | MovieListResponseErrorBody;
 
 export interface MovieDetailsRequestBody {
     i: string; // IMDB ID
