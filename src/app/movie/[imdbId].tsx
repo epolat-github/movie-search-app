@@ -112,12 +112,15 @@ const Details = () => {
                         headerAnimatedStyle,
                     ]}
                 >
-                    <BlurImage source={Poster === "N/A" ? undefined : Poster} />
+                    <BlurImage
+                        source={Poster === "N/A" ? undefined : Poster}
+                        tint="default"
+                    />
 
                     <Image
                         source={Poster === "N/A" ? undefined : Poster}
                         contentFit="contain"
-                        transition={1000}
+                        transition={300}
                         style={{
                             flex: 1,
                             zIndex: 3,
