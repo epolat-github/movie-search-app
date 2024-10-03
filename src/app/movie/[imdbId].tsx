@@ -191,10 +191,10 @@ const Details = () => {
                         />
 
                         <Button
-                            text="Dismiss"
+                            text="Back to Search"
                             onPress={() => router.dismiss()}
                             containerStyle={{
-                                backgroundColor: "red",
+                                backgroundColor: "gray",
                             }}
                         />
                     </View>
