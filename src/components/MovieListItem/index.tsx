@@ -4,6 +4,7 @@ import { Image } from "expo-image";
 import { spacing } from "../../theme/spacing";
 import { useRouter } from "expo-router";
 import Animated from "react-native-reanimated";
+import BlurImage from "../BlurImage";
 
 interface MovieListItemType {
     data: MovieListSingleItem;
@@ -17,45 +18,53 @@ const MovieListItem: React.FC<MovieListItemType> = (props) => {
     const router = useRouter();
 
     return (
-        <Pressable onPress={() => router.push(`/movie/${imdbID}`)}>
-            <View
+        <Pressable
+            onPress={() => router.push(`/movie/${imdbID}`)}
+            style={{
+                borderRadius: spacing.small,
+                overflow: "hidden",
+            }}
+        >
+            <Animated.View
                 style={{
+                    flex: 1,
+                    height: 450,
                     borderRadius: spacing.small,
-                    paddingHorizontal: spacing.medium,
-                    overflow: "hidden",
-                    backgroundColor: "#fff",
-                    gap: spacing.small,
+                    paddingTop: spacing.large,
+                    justifyContent: "space-between",
                 }}
             >
-                <Animated.View
-                    style={{
-                        flex: 1,
-                        // width: "100%",
-                        height: 400,
-                        borderRadius: spacing.small,
-                    }}
-                >
-                    <Image
-                        source={Poster === "N/A" ? undefined : Poster}
-                        contentFit="contain"
-                        transition={300}
-                        style={{
-                            width: "100%",
-                            height: "100%",
-                        }}
-                        placeholder="No Image"
-                    />
-                </Animated.View>
+                <BlurImage source={Poster === "N/A" ? undefined : Poster} />
 
-                <Text
+                <Image
+                    source={Poster === "N/A" ? undefined : Poster}
+                    contentFit="contain"
+                    transition={300}
                     style={{
-                        fontWeight: "bold",
-                        fontSize: 24,
+                        flex: 0.8,
+                        zIndex: 3,
+                    }}
+                    placeholder="No Image"
+                />
+
+                <View
+                    style={{
+                        flex: 0.2,
+                        paddingHorizontal: spacing.large,
+                        justifyContent: "center",
                     }}
                 >
-                    {Title}
-                </Text>
-            </View>
+                    <Text
+                        style={{
+                            fontWeight: "bold",
+                            fontSize: 24,
+                            color: "#fff",
+                        }}
+                    >
+                        {Title}
+                    </Text>
+                </View>
+            </Animated.View>
         </Pressable>
     );
 };

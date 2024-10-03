@@ -169,6 +169,7 @@ const Index = () => {
                 contentInsetAdjustmentBehavior="always"
                 contentContainerStyle={{
                     gap: spacing.medium,
+                    paddingHorizontal: spacing.large,
                 }}
                 data={movieList}
                 renderItem={({ item }) => <MovieListItem data={item} />}
