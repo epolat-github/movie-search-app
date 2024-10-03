@@ -11,9 +11,10 @@ import Animated, {
     withTiming,
 } from "react-native-reanimated";
 
-import { EvilIcons, Entypo } from "@expo/vector-icons";
+import { EvilIcons, Entypo, Ionicons } from "@expo/vector-icons";
 import { spacing } from "../../theme/spacing";
 import useDebounce from "../../hooks/useDebounce";
+import { colors } from "../../theme/colors";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 const AnimatedTextInput = Animated.createAnimatedComponent(TextInput);
@@ -21,9 +22,14 @@ const AnimatedTextInput = Animated.createAnimatedComponent(TextInput);
 interface SearchBarType {
     style?: ViewStyle;
     onSearch: (value: string) => void;
+    onFilterPress: () => void;
 }
 
-const SearchBar: React.FC<SearchBarType> = ({ style, onSearch }) => {
+const SearchBar: React.FC<SearchBarType> = ({
+    style,
+    onSearch,
+    onFilterPress,
+}) => {
     const [isFocused, setIsFocused] = useState(false);
     const [value, setValue] = useState("");
 
@@ -111,6 +117,15 @@ const SearchBar: React.FC<SearchBarType> = ({ style, onSearch }) => {
                         name="circle-with-cross"
                         size={20}
                         color="#8e8d9289"
+                    />
+                </AnimatedPressable>
+            </Animated.View>
+            <Animated.View>
+                <AnimatedPressable onPress={onFilterPress} hitSlop={10}>
+                    <Ionicons
+                        name="filter-sharp"
+                        size={20}
+                        color={colors.secondary}
                     />
                 </AnimatedPressable>
             </Animated.View>
