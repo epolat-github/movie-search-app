@@ -16,7 +16,7 @@ export const getMovieList = async (body: MovieListRequestBody) => {
 
     if (page) searchParams.append("page", page.toString());
     if (type) searchParams.append("type", type);
-    if (y) searchParams.append("year", y.toString());
+    if (y) searchParams.append("y", y);
 
     const url = `${API_URL}/?${searchParams.toString()}`;
 
