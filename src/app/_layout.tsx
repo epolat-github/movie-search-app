@@ -2,12 +2,25 @@ import { Stack } from "expo-router";
 
 const RootLayout = () => {
     return (
-        <Stack>
-            <Stack.Screen name="index" />
+        <Stack
+            screenOptions={{
+                contentStyle: {
+                    backgroundColor: "#fff",
+                },
+                headerShadowVisible: false,
+            }}
+        >
             <Stack.Screen
-                name="details"
+                name="index"
+                options={{
+                    title: "Movie List",
+                }}
+            />
+            <Stack.Screen
+                name="movie/[imdbId]"
                 options={{
                     presentation: "modal",
+                    headerShown: false,
                 }}
             />
         </Stack>
