@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, TextInput, ViewStyle, Pressable } from "react-native";
+import {
+    StyleSheet,
+    TextInput,
+    ViewStyle,
+    Pressable,
+    Keyboard,
+} from "react-native";
 import Animated, {
     useAnimatedStyle,
     withTiming,
@@ -60,6 +66,12 @@ const SearchBar: React.FC<SearchBarType> = ({ style, onSearch }) => {
         [value, isFocused]
     );
 
+    const onClearIconPress = () => {
+        setValue("");
+        onBlur();
+        Keyboard.dismiss();
+    };
+
     return (
         <Animated.View
             style={[
@@ -91,7 +103,7 @@ const SearchBar: React.FC<SearchBarType> = ({ style, onSearch }) => {
                     // selectionColor={colors.primary}
                 />
                 <AnimatedPressable
-                    onPress={() => setValue("")}
+                    onPress={onClearIconPress}
                     style={clearIconStyle}
                     hitSlop={10}
                 >
