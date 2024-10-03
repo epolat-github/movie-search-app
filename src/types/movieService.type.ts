@@ -65,7 +65,7 @@ export interface MovieDetailsResponseBody {
     imdbRating: string;
     imdbVotes: string;
     imdbID: string;
-    Type: string;
+    Type: MovieType;
     DVD: string;
     BoxOffice: string;
     Production: string;
