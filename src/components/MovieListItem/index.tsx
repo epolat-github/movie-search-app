@@ -3,8 +3,14 @@ import { MovieListSingleItem } from "../../types/movieService.type";
 import { Image } from "expo-image";
 import { spacing } from "../../theme/spacing";
 import { useRouter } from "expo-router";
-import Animated from "react-native-reanimated";
+import Animated, {
+    useAnimatedStyle,
+    useSharedValue,
+    withTiming,
+} from "react-native-reanimated";
 import BlurImage from "../BlurImage";
+
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 interface MovieListItemType {
     data: MovieListSingleItem;
@@ -16,14 +22,38 @@ const MovieListItem: React.FC<MovieListItemType> = (props) => {
     const { Title, Poster, imdbID } = data;
 
     const router = useRouter();
+    const scale = useSharedValue(1);
+
+    const onPressIn = () => {
+        scale.value = withTiming(0.95);
+    };
+
+    const onPressOut = () => {
+        scale.value = withTiming(1);
+    };
+
+    const buttonAnimatedStyle = useAnimatedStyle(() => {
+        return {
+            transform: [
+                {
+                    scale: scale.value,
+                },
+            ],
+        };
+    });
 
     return (
-        <Pressable
+        <AnimatedPressable
+            onPressIn={onPressIn}
+            onPressOut={onPressOut}
             onPress={() => router.push(`/movie/${imdbID}`)}
-            style={{
-                borderRadius: spacing.small,
-                overflow: "hidden",
-            }}
+            style={[
+                {
+                    borderRadius: spacing.small,
+                    overflow: "hidden",
+                },
+                buttonAnimatedStyle,
+            ]}
         >
             <Animated.View
                 style={{
@@ -65,7 +95,7 @@ const MovieListItem: React.FC<MovieListItemType> = (props) => {
                     </Text>
                 </View>
             </Animated.View>
-        </Pressable>
+        </AnimatedPressable>
     );
 };
 
