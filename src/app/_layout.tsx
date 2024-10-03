@@ -1,6 +1,8 @@
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
-import { Stack } from "expo-router";
+import { Link, Stack } from "expo-router";
+import { Pressable } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 const RootLayout = () => {
     return (
@@ -22,6 +24,23 @@ const RootLayout = () => {
                         name="index"
                         options={{
                             title: "Movie List",
+                            headerRight: () => (
+                                <Link href="/favorites" asChild>
+                                    <Pressable hitSlop={10}>
+                                        <MaterialIcons
+                                            name="favorite"
+                                            size={24}
+                                            color="red"
+                                        />
+                                    </Pressable>
+                                </Link>
+                            ),
+                        }}
+                    />
+                    <Stack.Screen
+                        name="favorites"
+                        options={{
+                            title: "Favorite List",
                         }}
                     />
                     <Stack.Screen

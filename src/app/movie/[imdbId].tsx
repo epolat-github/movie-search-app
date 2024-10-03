@@ -1,7 +1,7 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
-import { Platform, Text, View } from "react-native";
+import { Platform, Pressable, Text, View } from "react-native";
 import { MovieDetailsResponseBody } from "../../types/movieService.type";
 import { getMovieDetails } from "../../services";
 import { spacing } from "../../theme/spacing";
@@ -17,12 +17,16 @@ import Animated, {
 import BlurImage from "../../components/BlurImage";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Button from "../../components/Button";
+import favoritesService from "../../services/favorites.service";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 const IMAGE_HEIGHT = 500;
 
 const Details = () => {
     const router = useRouter();
-    const params = useLocalSearchParams();
+    const params = useLocalSearchParams<{
+        imdbId: string;
+    }>();
     const { top } = useSafeAreaInsets();
 
     const imdbId = params.imdbId;
@@ -32,6 +36,7 @@ const Details = () => {
 
     const [movieDetails, setMovieDetails] =
         useState<MovieDetailsResponseBody>();
+    const [isInFavorite, setIsInFavorite] = useState<boolean>();
 
     const scrollHandler = useAnimatedScrollHandler((event) => {
         scrollOffset.value = event.contentOffset.y;
@@ -72,12 +77,27 @@ const Details = () => {
         }
     };
 
+    const checkIsInFavorite = async (id: string) => {
+        const result = await favoritesService.isMovieFavorite(id);
+        setIsInFavorite(result);
+    };
+
     useEffect(() => {
         if (!imdbId) return;
-        if (typeof imdbId !== "string") return;
 
         getMovieDetailsHandler(imdbId);
+        checkIsInFavorite(imdbId);
     }, [imdbId]);
+
+    const toggleFavorite = async () => {
+        if (isInFavorite) {
+            await favoritesService.removeFavoriteMovie(imdbId);
+            setIsInFavorite(false);
+        } else {
+            await favoritesService.addFavoriteMovie(imdbId);
+            setIsInFavorite(true);
+        }
+    };
 
     const openUrl = async (url: string) => {
         const canOpenUrl = await Linking.canOpenURL(url);
@@ -138,14 +158,44 @@ const Details = () => {
                         gap: spacing.medium,
                     }}
                 >
-                    <Text
+                    <View
                         style={{
-                            fontWeight: "bold",
-                            fontSize: 32,
+                            flexDirection: "row",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            gap: spacing.large,
                         }}
                     >
-                        {Title}
-                    </Text>
+                        <Text
+                            style={{
+                                fontWeight: "bold",
+                                fontSize: 32,
+                                flex: 0.9,
+                            }}
+                            numberOfLines={2}
+                        >
+                            {Title}
+                        </Text>
+                        <Pressable
+                            onPress={toggleFavorite}
+                            hitSlop={10}
+                            style={{
+                                flex: 0.1,
+                                justifyContent: "center",
+                                alignItems: "center",
+                            }}
+                        >
+                            <MaterialIcons
+                                name={
+                                    isInFavorite
+                                        ? "favorite"
+                                        : "favorite-outline"
+                                }
+                                size={30}
+                                color="red"
+                            />
+                        </Pressable>
+                    </View>
                     <Text
                         style={{
                             fontWeight: "bold",
