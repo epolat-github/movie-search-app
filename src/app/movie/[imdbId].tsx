@@ -19,6 +19,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Button from "../../components/Button";
 import favoritesService from "../../services/favorites.service";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import CloseButton from "../../components/CloseButton";
 
 const IMAGE_HEIGHT = 500;
 
@@ -112,7 +113,14 @@ const Details = () => {
     const { Poster, Title, Year, imdbID } = movieDetails;
 
     return (
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 1, position: "relative" }}>
+            <CloseButton
+                onPress={() => router.dismiss()}
+                style={{
+                    top: spacing.medium,
+                    right: spacing.medium,
+                }}
+            />
             <Animated.ScrollView
                 ref={scrollRef}
                 scrollEventThrottle={16}
@@ -241,14 +249,6 @@ const Details = () => {
                             onPress={() =>
                                 openUrl(`https://www.imdb.com/title/${imdbID}`)
                             }
-                        />
-
-                        <Button
-                            text="Back to Search"
-                            onPress={() => router.dismiss()}
-                            containerStyle={{
-                                backgroundColor: "gray",
-                            }}
                         />
                     </View>
                 </View>
