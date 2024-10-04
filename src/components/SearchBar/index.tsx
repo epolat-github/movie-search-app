@@ -104,7 +104,6 @@ const SearchBar: React.FC<SearchBarType> = ({
                         flex: 1,
                         marginLeft: spacing.tiny,
                     }}
-                    autoFocus
                     placeholder={"Start typing to search a movie"}
                     placeholderTextColor="#8E8D92"
                     // selectionColor={colors.primary}
