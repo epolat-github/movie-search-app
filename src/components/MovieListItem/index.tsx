@@ -1,4 +1,4 @@
-import { Pressable, Text, View } from "react-native";
+import { Platform, Pressable, Text, View } from "react-native";
 import { MovieListSingleItem } from "../../types/movieService.type";
 import { Image } from "expo-image";
 import { spacing } from "../../theme/spacing";
@@ -57,14 +57,15 @@ const MovieListItem: React.FC<MovieListItemType> = (props) => {
         >
             <Animated.View
                 style={{
-                    flex: 1,
                     height: 450,
                     borderRadius: spacing.small,
                     paddingTop: spacing.large,
                     justifyContent: "space-between",
                 }}
             >
-                <BlurImage source={Poster === "N/A" ? undefined : Poster} />
+                {Platform.OS === "ios" && (
+                    <BlurImage source={Poster === "N/A" ? undefined : Poster} />
+                )}
 
                 <Image
                     source={Poster === "N/A" ? undefined : Poster}
@@ -82,13 +83,17 @@ const MovieListItem: React.FC<MovieListItemType> = (props) => {
                         flex: 0.2,
                         paddingHorizontal: spacing.large,
                         justifyContent: "center",
+                        zIndex: 4,
                     }}
                 >
                     <Text
                         style={{
                             fontWeight: "bold",
                             fontSize: 24,
-                            color: "#fff",
+                            color: Platform.select({
+                                android: "#000",
+                                ios: "#fff",
+                            }),
                         }}
                     >
                         {Title}
