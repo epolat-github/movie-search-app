@@ -21,12 +21,17 @@ import {
 } from "@gorhom/bottom-sheet";
 import { colors } from "../theme/colors";
 import Button from "../components/Button";
+import { useSnackbarContext } from "../context/SnackbarContext";
 
 const Index = () => {
     const flatListRef = useRef<FlatList | null>(null);
     const bottomSheetRef = useRef<BottomSheetModal>(null);
 
-    const [movieList, setMovieList] = useState<MovieListSingleItem[]>([]);
+    const { showSnackbar } = useSnackbarContext();
+
+    const [movieList, setMovieList] = useState<MovieListSingleItem[] | null>(
+        null
+    );
     const [isLoading, setIsLoading] = useState(false);
     const [searchValue, setSearchValue] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
@@ -61,7 +66,9 @@ const Index = () => {
             });
 
             if (movieListResult.Response === "False") {
-                // TODO show error
+                showSnackbar(movieListResult.Error, {
+                    variant: "error",
+                });
                 console.log(movieListResult.Error);
                 return;
             }
@@ -70,6 +77,7 @@ const Index = () => {
                 setMovieList(movieListResult.Search);
             } else {
                 setMovieList((prev) => {
+                    if (prev === null) return movieListResult.Search;
                     return [...prev, ...movieListResult.Search];
                 });
             }
@@ -77,17 +85,25 @@ const Index = () => {
             setTotalPageCount(
                 Math.ceil(Number(movieListResult.totalResults) / 10)
             );
-        } catch (err) {
-            // TODO show proper feedback with maybe snackbar?
+        } catch (err: any) {
+            showSnackbar(
+                err?.message ||
+                    "Something went wrong when searching for a value.",
+                {
+                    variant: "error",
+                    duration: 1500,
+                }
+            );
             console.log(err);
-            alert("Error!");
         } finally {
             setIsLoading(false);
         }
     };
 
     const fetchNextPage = async () => {
-        if (!isLoading) {
+        // when flatlist data is an empty array, end threshold is detected as "hit" and infinite loop occurs
+        // only if the data is not loading and there are actual data, next page can be fetched
+        if (!isLoading && movieList && movieList?.length !== 0) {
             setCurrentPage((prev) => {
                 if (prev === totalPageCount) return prev;
                 return prev + 1;
@@ -98,7 +114,7 @@ const Index = () => {
     const resetListState = () => {
         // reset pagination
         setCurrentPage(1);
-        setMovieList([]);
+        // setMovieList([]);
 
         // scroll to top
         flatListRef?.current?.scrollToOffset({
@@ -107,10 +123,12 @@ const Index = () => {
         });
     };
 
+    // list position and pagination should be resetted when the input changes
+    // if the value is an empty string (when search input is cleared), search value should be updated but list shouldn't be resetted
     const onSearchValueUpdate = (newValue: string) => {
-        if (newValue.trim() === "") return;
-
-        resetListState();
+        if (newValue.trim() !== "") {
+            resetListState();
+        }
 
         setSearchValue(newValue);
     };
@@ -164,23 +182,50 @@ const Index = () => {
                 onSearch={onSearchValueUpdate}
                 onFilterPress={openFilterSheet}
             />
-            <FlatList
-                ref={flatListRef}
-                contentInsetAdjustmentBehavior="always"
-                contentContainerStyle={{
-                    gap: spacing.medium,
-                    paddingHorizontal: spacing.large,
-                }}
-                data={movieList}
-                renderItem={({ item }) => <MovieListItem data={item} />}
-                keyExtractor={(item) => item.imdbID}
-                initialNumToRender={3}
-                onEndReachedThreshold={0.001}
-                ListFooterComponent={() => isLoading && <ActivityIndicator />}
-                onEndReached={fetchNextPage}
-                keyboardDismissMode="on-drag"
-                // bounces={false}  // can be used in case onEndReached fired multiple times because of the bounce on IOS
-            />
+            {!movieList && (
+                <View
+                    style={{
+                        paddingHorizontal: spacing.large,
+                        backgroundColor: colors.secondary,
+                        paddingVertical: spacing.medium,
+                        marginHorizontal: spacing.small,
+                        borderRadius: spacing.small,
+                    }}
+                >
+                    <Text style={{ color: "#fff" }}>
+                        You can search a movie, series or an episode from the
+                        input field above. Next to it, there is a filtering
+                        button that can be used to filter by years and types.
+                    </Text>
+                </View>
+            )}
+            {movieList && (
+                <FlatList
+                    ref={flatListRef}
+                    contentInsetAdjustmentBehavior="always"
+                    contentContainerStyle={{
+                        gap: spacing.medium,
+                        paddingHorizontal: spacing.large,
+                    }}
+                    ListEmptyComponent={
+                        <Text>
+                            Result not found. Please search by a different
+                            title.
+                        </Text>
+                    }
+                    data={movieList}
+                    renderItem={({ item }) => <MovieListItem data={item} />}
+                    keyExtractor={(item) => item.imdbID}
+                    initialNumToRender={3}
+                    onEndReachedThreshold={0.001}
+                    ListFooterComponent={() =>
+                        isLoading && <ActivityIndicator />
+                    }
+                    onEndReached={fetchNextPage}
+                    keyboardDismissMode="on-drag"
+                    // bounces={false}  // can be used in case onEndReached fired multiple times because of the bounce on IOS
+                />
+            )}
             <BottomSheetModal
                 ref={bottomSheetRef}
                 snapPoints={snapPoints}
