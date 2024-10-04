@@ -26,12 +26,7 @@ const Favorites = () => {
                  * If that happens, lengths will be same but data won't be! But for this app, there is no API and between focuses, only favorites can be removed and/or re-added.
                  * In both cases, final length will either be same (no need to fetch again), or be less (fetch again because lengths are different)
                  */
-                if (favorites) {
-                    const isSameLength =
-                        favoriteIds.length === favorites.length;
-
-                    if (isSameLength) return;
-                }
+                if (favoriteIds.length === favorites?.length) return;
 
                 const favoritesData: MovieDetailsResponseBody[] = [];
 
@@ -42,6 +37,7 @@ const Favorites = () => {
                         );
                         favoritesData.push(detailsResponse);
                     } catch (err) {
+                        // gracefully handling the errors and showing only the success ones would be the proper way
                         console.log(
                             "Error when getting a favorite movie details: ",
                             err
