@@ -114,13 +114,15 @@ const Details = () => {
 
     return (
         <View style={{ flex: 1, position: "relative" }}>
-            <CloseButton
-                onPress={() => router.dismiss()}
-                style={{
-                    top: spacing.medium,
-                    right: spacing.medium,
-                }}
-            />
+            {Platform.OS === "ios" && (
+                <CloseButton
+                    onPress={() => router.dismiss()}
+                    style={{
+                        top: spacing.medium,
+                        right: spacing.medium,
+                    }}
+                />
+            )}
             <Animated.ScrollView
                 ref={scrollRef}
                 scrollEventThrottle={16}
