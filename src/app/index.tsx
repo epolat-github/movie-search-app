@@ -1,27 +1,20 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
     ActivityIndicator,
     FlatList,
-    Pressable,
     StyleSheet,
     Text,
     View,
 } from "react-native";
 import { getMovieList } from "../services";
-import { MovieListSingleItem, MovieType } from "../types/movieService.type";
+import { MovieListSingleItem } from "../types/movieService.type";
 import SearchBar from "../components/SearchBar";
 import { spacing } from "../theme/spacing";
 import MovieListItem from "../components/MovieListItem";
-import {
-    BottomSheetBackdrop,
-    BottomSheetBackdropProps,
-    BottomSheetModal,
-    BottomSheetTextInput,
-    BottomSheetView,
-} from "@gorhom/bottom-sheet";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { colors } from "../theme/colors";
-import Button from "../components/Button";
 import { useSnackbarContext } from "../context/SnackbarContext";
+import FilterBottomSheet, { FilterBody } from "../components/FilterBottomSheet";
 
 const Index = () => {
     const flatListRef = useRef<FlatList | null>(null);
@@ -37,10 +30,10 @@ const Index = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPageCount, setTotalPageCount] = useState<number | null>(null);
 
-    // states for filtering
-    const [startYear, setStartYear] = useState("");
-    const [endYear, setEndYear] = useState("");
-    const [type, setType] = useState<MovieType>();
+    const [filters, setFilters] = useState<FilterBody>({
+        endYear: "",
+        startYear: "",
+    });
 
     useEffect(() => {
         getMovieListHandler(searchValue, currentPage);
@@ -51,6 +44,8 @@ const Index = () => {
             if (movieName.trim() === "") return;
 
             setIsLoading(true);
+
+            const { startYear, endYear, type } = filters;
 
             let yearSearch = "";
 
@@ -141,29 +136,6 @@ const Index = () => {
         bottomSheetRef.current?.dismiss();
     };
 
-    const snapPoints = useMemo(() => ["50%", "80%"], []);
-
-    const renderBackdrop = useCallback(
-        (props: BottomSheetBackdropProps) => (
-            <BottomSheetBackdrop
-                {...props}
-                disappearsOnIndex={-1}
-                appearsOnIndex={0}
-            />
-        ),
-        []
-    );
-
-    const onFilterTypeSelect = (selectedType: MovieType) => {
-        setType((prev) => {
-            if (prev === selectedType) {
-                return undefined;
-            }
-
-            return selectedType;
-        });
-    };
-
     const onFilterHandler = async () => {
         resetListState();
 
@@ -226,117 +198,12 @@ const Index = () => {
                     // bounces={false}  // can be used in case onEndReached fired multiple times because of the bounce on IOS
                 />
             )}
-            <BottomSheetModal
+            <FilterBottomSheet
                 ref={bottomSheetRef}
-                snapPoints={snapPoints}
-                backdropComponent={renderBackdrop}
-                enablePanDownToClose
-                keyboardBehavior="extend"
-                keyboardBlurBehavior="restore"
-                index={0}
-            >
-                <BottomSheetView
-                    style={{
-                        flex: 1,
-                        paddingHorizontal: spacing.medium,
-                        gap: spacing.medium,
-                    }}
-                >
-                    <Text
-                        style={{
-                            fontWeight: "bold",
-                            fontSize: 18,
-                        }}
-                    >
-                        Filter Your Search
-                    </Text>
-
-                    <View>
-                        <Text style={{ color: "gray" }}>
-                            Movies only use a start year
-                        </Text>
-                        <BottomSheetTextInput
-                            style={styles.filterTextInput}
-                            placeholder="Start year to search"
-                            value={startYear}
-                            onChangeText={setStartYear}
-                            keyboardType="numeric"
-                            maxLength={4}
-                        />
-                        <Text style={{ color: "gray" }}>
-                            Series use an end year too
-                        </Text>
-                        <BottomSheetTextInput
-                            style={styles.filterTextInput}
-                            placeholder="End year to search"
-                            value={endYear}
-                            onChangeText={setEndYear}
-                            keyboardType="numeric"
-                            maxLength={4}
-                        />
-                    </View>
-
-                    <View
-                        style={{
-                            gap: spacing.small,
-                        }}
-                    >
-                        <Text style={{ fontWeight: "bold" }}>
-                            Filter by type
-                        </Text>
-                        <Text style={{ color: "gray" }}>
-                            Select a type again to disable the filter
-                        </Text>
-                        <View
-                            style={{
-                                flexDirection: "row",
-                                gap: spacing.tiny,
-                            }}
-                        >
-                            {(["series", "movie", "episode"] as const).map(
-                                (typeName) => (
-                                    <Pressable
-                                        key={typeName}
-                                        style={{
-                                            flex: 1,
-                                            backgroundColor:
-                                                typeName === type
-                                                    ? colors.secondary
-                                                    : colors.gray,
-                                            borderRadius: spacing.tiny,
-                                            padding: spacing.small,
-                                        }}
-                                        onPress={() =>
-                                            onFilterTypeSelect(typeName)
-                                        }
-                                    >
-                                        <Text
-                                            style={{
-                                                textTransform: "capitalize",
-                                                textAlign: "center",
-                                                color:
-                                                    typeName === type
-                                                        ? "#fff"
-                                                        : "#000",
-                                            }}
-                                        >
-                                            {typeName}
-                                        </Text>
-                                    </Pressable>
-                                )
-                            )}
-                        </View>
-                    </View>
-
-                    <Button
-                        text="Filter Search"
-                        containerStyle={{
-                            marginTop: spacing.small,
-                        }}
-                        onPress={onFilterHandler}
-                    />
-                </BottomSheetView>
-            </BottomSheetModal>
+                onApprove={onFilterHandler}
+                filters={filters}
+                setFilters={setFilters}
+            />
         </View>
     );
 };
