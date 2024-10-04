@@ -252,6 +252,9 @@ const Index = () => {
                     </Text>
 
                     <View>
+                        <Text style={{ color: "gray" }}>
+                            Movies only use a start year
+                        </Text>
                         <BottomSheetTextInput
                             style={styles.filterTextInput}
                             placeholder="Start year to search"
@@ -260,6 +263,9 @@ const Index = () => {
                             keyboardType="numeric"
                             maxLength={4}
                         />
+                        <Text style={{ color: "gray" }}>
+                            Series use an end year too
+                        </Text>
                         <BottomSheetTextInput
                             style={styles.filterTextInput}
                             placeholder="End year to search"
@@ -275,7 +281,12 @@ const Index = () => {
                             gap: spacing.small,
                         }}
                     >
-                        <Text>Filter by type</Text>
+                        <Text style={{ fontWeight: "bold" }}>
+                            Filter by type
+                        </Text>
+                        <Text style={{ color: "gray" }}>
+                            Select a type again to disable the filter
+                        </Text>
                         <View
                             style={{
                                 flexDirection: "row",
