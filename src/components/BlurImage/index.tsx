@@ -1,6 +1,6 @@
 import { BlurTint, BlurView } from "expo-blur";
 import { Image, ImageProps } from "expo-image";
-import { StyleSheet, View } from "react-native";
+import { Platform, StyleSheet, View } from "react-native";
 
 interface BlurImageType {
     source: ImageProps["source"];
@@ -17,8 +17,10 @@ const BlurImage: React.FC<BlurImageType> = (props) => {
             }}
         >
             <BlurView
-                experimentalBlurMethod="dimezisBlurView"
-                intensity={30}
+                intensity={Platform.select({
+                    android: 80,
+                    ios: 30,
+                })}
                 style={{
                     zIndex: 2,
                     ...StyleSheet.absoluteFillObject,
