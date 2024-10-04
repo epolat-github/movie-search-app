@@ -31,7 +31,7 @@ const BlurImage: React.FC<BlurImageType> = (props) => {
             <Image
                 source={source}
                 contentFit="cover"
-                transition={1000}
+                transition={300}
                 style={{
                     flex: 1,
                     zIndex: 1,
