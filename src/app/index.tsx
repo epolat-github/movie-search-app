@@ -144,26 +144,13 @@ const Index = () => {
     };
 
     return (
-        <View
-            style={{
-                flex: 1,
-                gap: spacing.large,
-            }}
-        >
+        <View style={styles.mainContainer}>
             <SearchBar
                 onSearch={onSearchValueUpdate}
                 onFilterPress={openFilterSheet}
             />
             {!movieList && (
-                <View
-                    style={{
-                        paddingHorizontal: spacing.large,
-                        backgroundColor: colors.secondary,
-                        paddingVertical: spacing.medium,
-                        marginHorizontal: spacing.small,
-                        borderRadius: spacing.small,
-                    }}
-                >
+                <View style={styles.initialInformationContainer}>
                     <Text style={{ color: "#fff" }}>
                         You can search a movie, series or an episode from the
                         input field above. Next to it, there is a filtering
@@ -175,10 +162,7 @@ const Index = () => {
                 <FlatList
                     ref={flatListRef}
                     contentInsetAdjustmentBehavior="always"
-                    contentContainerStyle={{
-                        gap: spacing.medium,
-                        paddingHorizontal: spacing.large,
-                    }}
+                    contentContainerStyle={styles.flatlistContentContainer}
                     ListEmptyComponent={
                         <Text>
                             Result not found. Please search by a different
@@ -209,14 +193,20 @@ const Index = () => {
 };
 
 const styles = StyleSheet.create({
-    filterTextInput: {
-        marginTop: 8,
-        marginBottom: 10,
-        borderRadius: 10,
-        fontSize: 16,
-        lineHeight: 20,
-        padding: 8,
-        backgroundColor: colors.gray,
+    mainContainer: {
+        flex: 1,
+        gap: spacing.large,
+    },
+    initialInformationContainer: {
+        paddingHorizontal: spacing.large,
+        backgroundColor: colors.secondary,
+        paddingVertical: spacing.medium,
+        marginHorizontal: spacing.small,
+        borderRadius: spacing.small,
+    },
+    flatlistContentContainer: {
+        gap: spacing.medium,
+        paddingHorizontal: spacing.large,
     },
 });
 
