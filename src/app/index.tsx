@@ -6,7 +6,7 @@ import {
     Text,
     View,
 } from "react-native";
-import { getMovieList } from "../services";
+import { getMovieList } from "../services/movie.service";
 import { MovieListSingleItem } from "../types/movieService.type";
 import SearchBar from "../components/SearchBar";
 import { spacing } from "../theme/spacing";

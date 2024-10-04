@@ -9,6 +9,8 @@ const API_KEY = process.env.EXPO_PUBLIC_API_KEY as string;
 export const getMovieList = async (body: MovieListRequestBody) => {
     const { s, r = "json", page, type, y } = body;
 
+    console.log("get movie list");
+
     const searchParams = new URLSearchParams({
         s,
         r,
@@ -38,6 +40,8 @@ export const getMovieList = async (body: MovieListRequestBody) => {
 };
 
 export const getMovieDetails = async (imdbId: string) => {
+    console.log("get movie details");
+
     const searchParams = new URLSearchParams({
         i: imdbId,
         r: "json",

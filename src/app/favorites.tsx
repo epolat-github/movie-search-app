@@ -2,7 +2,7 @@ import { useCallback, useState } from "react";
 import { Text, View } from "react-native";
 import { MovieDetailsResponseBody } from "../types/movieService.type";
 import favoritesService from "../services/favorites.service";
-import { getMovieDetails } from "../services";
+import { getMovieDetails } from "../services/movie.service";
 import { spacing } from "../theme/spacing";
 import MovieListItem from "../components/MovieListItem";
 import { useFocusEffect } from "expo-router";

@@ -3,7 +3,7 @@ import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
 import { Platform, Pressable, Text, View } from "react-native";
 import { MovieDetailsResponseBody } from "../../types/movieService.type";
-import { getMovieDetails } from "../../services";
+import { getMovieDetails } from "../../services/movie.service";
 import { spacing } from "../../theme/spacing";
 import { Image } from "expo-image";
 import * as Linking from "expo-linking";
